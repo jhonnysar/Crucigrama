@@ -22,6 +22,24 @@ class PalabraTest {
 
 	List<String> palabras = new ArrayList<String>();
 
+	@Test
+	void aniadirTest() {
+		agregarPalabras();
+		int numeroPalabrasAntes= palabras.size();
+		palabras.add("palabra");
+		assertEquals(numeroPalabrasAntes+1, palabras.size());
+	}
+
+	@Test
+	void eliminarPalabraTest() {
+		agregarPalabras();
+		palabras.add("palabra");
+		int numeroPalabrasAntes= palabras.size();
+		palabras.remove("palabra");
+		assertEquals(numeroPalabrasAntes-1, palabras.size());
+		assertTrue(palabras.contains("palabra")==false);
+	}
+
 	// se verifica que el tamaño sea entre 3-10 caracteres
 	@Test
 	void verificarTamañoTest() {
@@ -90,7 +108,7 @@ class PalabraTest {
 		}
 
 	}
-
+	
 	private void agregarPalabras() {
 		palabras.add(palabra1);
 		palabras.add(palabra2);
