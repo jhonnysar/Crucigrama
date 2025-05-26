@@ -15,7 +15,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 
 public class ListaPalabras extends JFrame {
 
@@ -131,7 +130,7 @@ public class ListaPalabras extends JFrame {
 
 		if (verificarPalabra(nuevaPalabra, crossword) && verificarDescripcion()) {
 			crossword.addWord(nuevaPalabra);
-			crossword.addDescription(descripcion.getText());
+			crossword.addDescription(nuevaPalabra,descripcion.getText());
 			datosTabla.addRow(new Object[] { nuevaPalabra, descripcion.getText() });
 
 			palabra.setText("");

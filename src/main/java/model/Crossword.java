@@ -2,23 +2,25 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Crossword {
 
 	List<String> words;
-	List<String> descriptions; 
+	Map<String,String> descriptions; 
 	int tableSise;
 
 	public Crossword() {
 		words = new ArrayList<String>();
-		descriptions = new ArrayList<String>();
+		descriptions = new TreeMap<String,String>();
 	}
 
 	public void addWord(String newWord) {
 		words.add(newWord);
 	}
-	public void addDescription(String newDescription) {
-		descriptions.add(newDescription);
+	public void addDescription(String word,String newDescription) {
+		descriptions.put(word,newDescription);
 	}
 	public boolean checkSize(String word) {
 		if (word.length() >= 3 && word.length() <= 10)
@@ -54,13 +56,13 @@ public class Crossword {
 	}
 	
 	public void setDescription(int position,String newDescription) {
-		descriptions.set(position, newDescription);
+		descriptions.put(words.get(position),newDescription);
 	}
 
 	public List<String> getWords() {
 		return words;
 	}
-	public String getDescription(int position) {
-		return descriptions.get(position);
+	public String getDescription(String word) {
+		return descriptions.get(word);
 	} 
 }
