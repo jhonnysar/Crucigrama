@@ -4,13 +4,11 @@ import java.util.*;
 
 public class CrosswordGenerator {
 	private char[][] board;
-	private int size;
 
 	private List<String> horizontalWords;
 	private List<String> verticalWords;
 
 	public CrosswordGenerator(int size) {
-		this.size = size;
 		board = new char[size][size];
 		for (char[] row : board) {
 			Arrays.fill(row, ' ');
@@ -22,8 +20,8 @@ public class CrosswordGenerator {
 	// busca una interseccion de palabras
 
 	private boolean placeWordWithIntersection(String word) {
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
 				for (int k = 0; k < word.length(); k++) {
 					if (board[i][j] == word.charAt(k)) {
 						if (tryVertical(word, i - k, j, true))
@@ -39,7 +37,7 @@ public class CrosswordGenerator {
 
 	// Busca una posicion Horizontal
 	private boolean tryHorizontal(String word, int row, int col, boolean mustIntersect) {
-		if (row < 0 || col < 0 || col + word.length() > size)
+		if (row < 0 || col < 0 || col + word.length() > board[0].length)
 			return false;
 
 		boolean hasIntersection = false;
@@ -54,13 +52,13 @@ public class CrosswordGenerator {
 				hasIntersection = true;
 
 			if (current == ' ') {
-				if ((r > 0 && board[r - 1][c] != ' ') || (r < size - 1 && board[r + 1][c] != ' '))
+				if ((r > 0 && board[r - 1][c] != ' ') || (r < board.length - 1 && board[r + 1][c] != ' '))
 					return false;
 			}
 		}
 
 		if ((col > 0 && board[row][col - 1] != ' ')
-				|| (col + word.length() < size && board[row][col + word.length()] != ' '))
+				|| (col + word.length() < board[0].length && board[row][col + word.length()] != ' '))
 			return false;
 
 		if (mustIntersect && !hasIntersection)
@@ -76,7 +74,7 @@ public class CrosswordGenerator {
 
 	// busca una posicion en vertical
 	private boolean tryVertical(String word, int row, int col, boolean mustIntersect) {
-		if (row < 0 || col < 0 || row + word.length() > size)
+		if (row < 0 || col < 0 || row + word.length() > board.length)
 			return false;
 
 		boolean hasIntersection = false;
@@ -91,13 +89,13 @@ public class CrosswordGenerator {
 				hasIntersection = true;
 
 			if (current == ' ') {
-				if ((c > 0 && board[r][c - 1] != ' ') || (c < size - 1 && board[r][c + 1] != ' '))
+				if ((c > 0 && board[r][c - 1] != ' ') || (c < board[0].length - 1 && board[r][c + 1] != ' '))
 					return false;
 			}
 		}
 
 		if ((row > 0 && board[row - 1][col] != ' ')
-				|| (row + word.length() < size && board[row + word.length()][col] != ' '))
+				|| (row + word.length() < board[0].length && board[row + word.length()][col] != ' '))
 			return false;
 
 		if (mustIntersect && !hasIntersection)
@@ -116,7 +114,7 @@ public class CrosswordGenerator {
 	// ademas de verificar que esta palabra pueda entrar en el espacio del
 	// crucigrama
 	private boolean placeWordHorizontally(String word, int row, int col) {
-		if (col < 0 || col + word.length() > size)
+		if (col < 0 || col + word.length() > board[0].length)
 			return false;
 
 		for (int i = 0; i < word.length(); i++) {
@@ -135,12 +133,12 @@ public class CrosswordGenerator {
 	public List<String> generateFlexibleCrossword(List<String> words) {
 		List<String> notPlaced = new ArrayList<>();
 		words.sort((a, b) -> b.length() - a.length()); // más larga primero
-		
+
 		String first = words.get(0);
 
-		int mid = size / 2;
+		int mid = board.length / 2;
 
-		if (!placeWordHorizontally(first, mid, (size - first.length()) / 2)) {
+		if (!placeWordHorizontally(first, mid, (board.length - first.length()) / 2)) {
 			notPlaced.add(first);
 		}
 
@@ -152,6 +150,69 @@ public class CrosswordGenerator {
 		}
 
 		return notPlaced;
+	}
+
+	public List<String> adjustBoard(List<String> words) {
+		int rowTop = findFirstChar(board, "top");
+		int rowBot = findFirstChar(board, "bot");
+		int colLeft = findFirstChar(board, "left");
+		int colRigth = findFirstChar(board, "rigth");
+		if (rowBot - rowTop > 10 && colRigth - colLeft > 10) {
+			board= new char[rowBot - rowTop][colRigth - colLeft];
+		}else{
+			board = new char[10][10];
+		}
+		
+		for (char[] row : board) {
+			Arrays.fill(row, ' ');
+		}
+		horizontalWords = new ArrayList<String>();
+		verticalWords = new ArrayList<String>();
+		return generateFlexibleCrossword(words);
+	}
+
+	private int findFirstChar(char[][] matriz, String direccion) {
+		int filas = matriz.length;
+		int columnas = matriz[0].length;
+
+		int startRow = 0, endRow = filas, stepRow = 1;
+		int startCol = 0, endCol = columnas, stepCol = 1;
+
+		switch (direccion.toLowerCase()) {
+		case "top":
+			break;
+		case "bot":
+			startRow = filas - 1;
+			endRow = -1;
+			stepRow = -1;
+			break;
+		case "left":
+			break;
+		case "rigth":
+			startCol = columnas - 1;
+			endCol = -1;
+			stepCol = -1;
+			break;
+		}
+
+		if (direccion.equals("top") || direccion.equals("bot")) {
+			for (int i = startRow; i != endRow; i += stepRow) {
+				for (int j = 0; j < columnas; j++) {
+					if (matriz[i][j] != ' ') {
+						return i;
+					}
+				}
+			}
+		} else {
+			for (int j = startCol; j != endCol; j += stepCol) {
+				for (int i = 0; i < filas; i++) {
+					if (matriz[i][j] != ' ') {
+						return j;
+					}
+				}
+			}
+		}
+		return 0;
 	}
 
 	// devuelve las palabras ubicadase en su sitio

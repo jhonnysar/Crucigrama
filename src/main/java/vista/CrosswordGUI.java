@@ -61,13 +61,14 @@ public class CrosswordGUI extends JFrame {
 
 		CrosswordGenerator generator = new CrosswordGenerator(size);
 		List<String> notPlaced = generator.generateFlexibleCrossword(validWords);
+		notPlaced = generator.adjustBoard(validWords);
 		char[][] board = generator.getBoard();
 
-		boardPanel.setLayout(new GridLayout(size, size));
+		boardPanel.setLayout(new GridLayout(board.length, board[0].length));
 		boardPanel.setBackground(new Color(191, 191, 191)); // fondo gris claro
 
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
 				char ch = board[i][j];
 				JLabel label = new JLabel("", SwingConstants.CENTER);
 				label.setOpaque(true);
