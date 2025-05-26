@@ -5,5 +5,18 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Crucigrama</name>
   <description>Aplicacion que crea un crucigrama</description>
-  
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
 </project>
