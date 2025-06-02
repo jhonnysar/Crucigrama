@@ -46,13 +46,14 @@ public class Crossword {
 	}
 
 	public void deleteWord(String removeWord) {
-		deleteDescription(words.indexOf(removeWord));
+		deleteDescription(removeWord);
 		words.remove(removeWord);
 		
 	}
 	
-	private void deleteDescription(int position) {
-		descriptions.remove(position);
+	private void deleteDescription(String removeWord) {
+		if(descriptions.containsKey(removeWord))
+			descriptions.remove(removeWord);
 	}
 	
 	public void setDescription(int position,String newDescription) {

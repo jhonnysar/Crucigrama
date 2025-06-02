@@ -61,7 +61,7 @@ public class CrosswordGUI extends JFrame {
 
 		CrosswordGenerator generator = new CrosswordGenerator(size);
 		List<String> notPlaced = generator.generateFlexibleCrossword(validWords);
-		notPlaced = generator.adjustBoard(validWords);
+		generator.adjustBoard();
 		char[][] board = generator.getBoard();
 
 		boardPanel.setLayout(new GridLayout(board.length, board[0].length));
@@ -87,6 +87,7 @@ public class CrosswordGUI extends JFrame {
 			}
 		}
 
+		
 		if (!notPlaced.isEmpty()) {
 			JOptionPane.showMessageDialog(this,
 					"No se pudieron colocar las siguientes palabras:\n" + String.join(", ", notPlaced));

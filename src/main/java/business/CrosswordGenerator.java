@@ -17,6 +17,29 @@ public class CrosswordGenerator {
 		verticalWords = new ArrayList<String>();
 	}
 
+	// genera la palabra central de la que el crucigrama va partir
+	public List<String> generateFlexibleCrossword(List<String> words) {
+		List<String> notPlaced = new ArrayList<>();
+		words.sort((a, b) -> b.length() - a.length()); // más larga primero
+
+		String first = words.get(0);
+
+		int mid = board.length / 2;
+
+		if (!placeWordHorizontally(first, mid, (board.length - first.length()) / 2)) {
+			notPlaced.add(first);
+		}
+
+		for (String word : words) {
+			if (!word.equals(first))
+				if (!placeWordWithIntersection(word)) {
+					notPlaced.add(word);
+				}
+		}
+
+		return notPlaced;
+	}
+	
 	// busca una interseccion de palabras
 
 	private boolean placeWordWithIntersection(String word) {
@@ -114,8 +137,6 @@ public class CrosswordGenerator {
 	// ademas de verificar que esta palabra pueda entrar en el espacio del
 	// crucigrama
 	private boolean placeWordHorizontally(String word, int row, int col) {
-		if (col < 0 || col + word.length() > board[0].length)
-			return false;
 
 		for (int i = 0; i < word.length(); i++) {
 			if (board[row][col + i] != ' ')
@@ -129,46 +150,39 @@ public class CrosswordGenerator {
 		return true;
 	}
 
-	// genera la palabra central de la que el crucigrama va partir
-	public List<String> generateFlexibleCrossword(List<String> words) {
-		List<String> notPlaced = new ArrayList<>();
-		words.sort((a, b) -> b.length() - a.length()); // más larga primero
 
-		String first = words.get(0);
 
-		int mid = board.length / 2;
-
-		if (!placeWordHorizontally(first, mid, (board.length - first.length()) / 2)) {
-			notPlaced.add(first);
-		}
-
-		for (String word : words) {
-			if (!word.equals(first))
-				if (!placeWordWithIntersection(word)) {
-					notPlaced.add(word);
-				}
-		}
-
-		return notPlaced;
-	}
-
-	public List<String> adjustBoard(List<String> words) {
+	public void adjustBoard() {
 		int rowTop = findFirstChar(board, "top");
 		int rowBot = findFirstChar(board, "bot");
 		int colLeft = findFirstChar(board, "left");
 		int colRigth = findFirstChar(board, "rigth");
-		if (rowBot - rowTop > 10 && colRigth - colLeft > 10) {
-			board= new char[rowBot - rowTop][colRigth - colLeft];
-		}else{
-			board = new char[10][10];
-		}
+		int rowsize=10;
+		int colsize=10;
+		char newBoard[][];
 		
-		for (char[] row : board) {
+		System.out.println(rowBot - rowTop);
+		if(rowBot - rowTop >= 10){
+			rowsize++;
+			rowsize = 1+rowBot - rowTop;
+		}	
+		System.out.println(colRigth - colLeft );
+		if(colRigth - colLeft >= 10) {
+			colRigth++;
+			colsize=colRigth - colLeft;
+		}
+		newBoard=new char[rowsize][colsize];
+		for (char[] row : newBoard) {
 			Arrays.fill(row, ' ');
 		}
-		horizontalWords = new ArrayList<String>();
-		verticalWords = new ArrayList<String>();
-		return generateFlexibleCrossword(words);
+		System.out.println(rowTop);
+		for (int i = rowTop; i < rowBot; i++) {
+			for (int j = colLeft; j < colRigth+1;j++) {
+				System.out.println((i - rowTop)+"     "+(j-colLeft));
+				newBoard[i - rowTop][j-colLeft] = board[i][j];
+			}
+		}
+		board=newBoard;
 	}
 
 	private int findFirstChar(char[][] matriz, String direccion) {
